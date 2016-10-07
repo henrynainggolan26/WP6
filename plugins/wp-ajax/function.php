@@ -18,12 +18,6 @@ function add_scripts() {
 
 add_action( 'wp_enqueue_scripts', 'add_scripts' );
 
-add_action( 'wp_ajax_autocomplete_post', 'my_action_autocomplete_postcallback' );
-add_action( 'wp_ajax_nopriv_autocomplete_post', 'my_action_autocomplete_postcallback' );
-
-add_action( 'wp_ajax_get_value', 'my_action_get_value_callback' );
-add_action( 'wp_ajax_nopriv_get_value', 'my_action_get_value_callback' );
-
 function my_action_autocomplete_postcallback() {
 	$keyword = isset($_POST['search']) ? $_POST['search'] : null;
 	$args = array('s' => $keyword );
@@ -59,10 +53,9 @@ function display_autocomplete(){
 
 		if ( $the_query->have_posts() ) {
 			while ( $the_query->have_posts() ) {
-				$the_query->the_post();
-				the_title(); 
-				echo "</br>";
-				//the_content();
+				$the_query->the_post();?>
+				<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a> 
+				<?php echo "</br>";
 			}
 			wp_reset_query();
 		}
@@ -82,3 +75,4 @@ function display_autocomplete(){
 	}
 }
 add_shortcode('shortcode_display_autocomplete', 'display_autocomplete');
+add_filter('widget_text', 'do_shortcode');
